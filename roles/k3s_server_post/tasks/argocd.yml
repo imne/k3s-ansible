@@ -1,0 +1,28 @@
+---
+- name: Create argocd namespace
+  command: >-
+    k3s kubectl create namespace argocd
+  register: this
+  changed_when: false
+  run_once: true
+  until: this.rc == 0
+  retries: 5
+
+- name: "Download argocd install to manifest folder on master node"
+  ansible.builtin.get_url:
+    url: "https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"
+    dest: "/tmp/k3s/argocd.yaml"
+    owner: root
+    group: root
+    mode: 0644
+  with_items: "{{ groups[group_name_master | default('master')] }}"
+  run_once: true
+
+- name: Install argocd
+  command: >-
+    k3s kubectl apply -f /tmp/k3s/argocd.yaml
+  register: this
+  changed_when: false
+  run_once: true
+  until: this.rc == 0
+  retries: 5
