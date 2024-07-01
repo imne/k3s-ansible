@@ -38,7 +38,6 @@ systemd_dir: ""
 cert_manager_notify_email: ""
 cert_manager_version: ""
 cert_manager_cloudflare_api_token: ""
-cert_manager_timeout: ""
 
 flannel_iface: ""
 
@@ -55,6 +54,9 @@ metal_lb_speaker_tag_version: ""
 metal_lb_controller_tag_version: ""
 
 metal_lb_ip_range: ""
+
+externaldns_pihole_server: ""
+externaldns_password: ""
 ```
 
 ### Hosts

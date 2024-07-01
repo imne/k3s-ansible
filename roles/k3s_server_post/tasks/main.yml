@@ -11,6 +11,9 @@
   include_tasks: argocd.yml
   tags: argocd
 
+- name: Deploy external dns 
+  include_tasks: externaldns.yml
+  tags: externaldns
 
 - name: Remove tmp directory used for manifests
   file:

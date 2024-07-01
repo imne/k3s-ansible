@@ -65,7 +65,10 @@ metal_lb_ip_range: "192.168.30.80-192.168.30.90"
 cert_manager_notify_email: ""
 cert_manager_version: ""
 cert_manager_cloudflare_api_token: ""
-cert_manager_timeout: ""
+
+#External DNS
+externaldns_pihole_server: ""
+externaldns_password: ""
 
 # Only enable this if you have set up your own container registry to act as a mirror / pull-through cache
 # (harbor / nexus / docker's official registry / etc).
