@@ -16,21 +16,3 @@
     group: root
     mode: 0644
   when: ansible_hostname == hostvars[groups[group_name_master | default('master')][0]]['ansible_hostname']
-
-- name: Copy cloudflare-api-token-secret manifest to first master
-  template:
-    src: "cloudflare-api-token-secret.yaml.j2"
-    dest: "/var/lib/rancher/k3s/server/manifests/cloudflare-api-token-secret.yaml"
-    owner: root
-    group: root
-    mode: 0644
-  when: ansible_hostname == hostvars[groups[group_name_master | default('master')][0]]['ansible_hostname']
-
-- name: Copy cluster issuer manifest to first master
-  template:
-    src: "cluster-issuer.yaml.j2"
-    dest: "/var/lib/rancher/k3s/server/manifests/cluster-issuer.yaml"
-    owner: root
-    group: root
-    mode: 0644
-  when: ansible_hostname == hostvars[groups[group_name_master | default('master')][0]]['ansible_hostname']

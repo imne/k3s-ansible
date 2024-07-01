@@ -3,6 +3,11 @@
   include_tasks: metallb.yml
   tags: metallb
 
+- name: Deploy cluster issuer 
+  include_tasks: cert_manager.yml
+  tags: cert-manager
+
+
 - name: Remove tmp directory used for manifests
   file:
     path: /tmp/k3s

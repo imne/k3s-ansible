@@ -35,6 +35,11 @@ k3s_version: ""
 ansible_user: NA
 systemd_dir: ""
 
+cert_manager_notify_email: ""
+cert_manager_version: ""
+cert_manager_cloudflare_api_token: ""
+cert_manager_timeout: ""
+
 flannel_iface: ""
 
 apiserver_endpoint: ""
