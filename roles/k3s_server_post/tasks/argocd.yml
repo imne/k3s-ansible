@@ -20,7 +20,7 @@
 
 - name: Install argocd
   command: >-
-    k3s kubectl apply -f /tmp/k3s/argocd.yaml
+    k3s kubectl apply -f /tmp/k3s/argocd.yaml -n argocd
   register: this
   changed_when: false
   run_once: true
