@@ -1,0 +1,9 @@
+---
+- name: Install longhorn
+  command: >-
+    k3s kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/{{ longhorn_version }}/deploy/longhorn.yaml
+  register: this
+  changed_when: false
+  run_once: true
+  until: this.rc == 0
+  retries: 5

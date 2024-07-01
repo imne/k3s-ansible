@@ -70,6 +70,9 @@ cert_manager_cloudflare_api_token: ""
 externaldns_pihole_server: ""
 externaldns_password: ""
 
+#longhorn
+longhorn_version: "v1.6.2"
+
 # Only enable this if you have set up your own container registry to act as a mirror / pull-through cache
 # (harbor / nexus / docker's official registry / etc).
 # Can be beneficial for larger dev/test environments (for example if you're getting rate limited by docker hub),

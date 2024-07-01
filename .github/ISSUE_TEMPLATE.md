@@ -57,6 +57,8 @@ metal_lb_ip_range: ""
 
 externaldns_pihole_server: ""
 externaldns_password: ""
+
+longhorn_version: "v1.6.2"
 ```
 
 ### Hosts
