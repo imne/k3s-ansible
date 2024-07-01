@@ -33,6 +33,9 @@
 - name: Deploy cert manager manifest
   include_tasks: cert_manager.yml
 
+- name: Deploy long horn manifest
+  include_tasks: longhorn.yml
+
 - name: Init cluster inside the transient k3s-init service
   command:
     cmd: "systemd-run -p RestartSec=2 \
