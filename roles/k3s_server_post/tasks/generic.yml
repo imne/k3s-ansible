@@ -19,6 +19,16 @@
   until: this.rc == 0
   retries: 5
 
+- name: Add Rancher helm repo
+  command: >-
+    helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
+  register: this
+  changed_when: false
+  with_items: "{{ groups[group_name_master | default('master')] }}"
+  run_once: true
+  until: this.rc == 0
+  retries: 5
+
 - name: Add helm repo update
   command: >-
     helm repo update
@@ -32,6 +42,16 @@
 - name: Create traefik namespace
   command: >-
     k3s kubectl create namespace traefik
+  register: this
+  changed_when: false
+  with_items: "{{ groups[group_name_master | default('master')] }}"
+  run_once: true
+  until: this.rc == 0
+  retries: 5
+
+- name: Create rancher namespace
+  command: >-
+    k3s kubectl create namespace cattle-system
   register: this
   changed_when: false
   with_items: "{{ groups[group_name_master | default('master')] }}"
@@ -62,6 +82,16 @@
 - name: Install Jenkins 
   command: >-
     helm install --namespace=jenkins jenkins jenkins/jenkins
+  register: this
+  changed_when: false
+  with_items: "{{ groups[group_name_master | default('master')] }}"
+  run_once: true
+  until: this.rc == 0
+  retries: 5
+
+- name: Install Rancher 
+  command: >-
+    helm install rancher rancher-stable/rancher --namespace cattle-system --set hostname={{ rancher_url }} --set bootstrapPassword={{ rancher_adminPassword }}
   register: this
   changed_when: false
   with_items: "{{ groups[group_name_master | default('master')] }}"

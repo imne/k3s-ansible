@@ -59,6 +59,9 @@ externaldns_pihole_server: ""
 externaldns_password: ""
 
 longhorn_version: "v1.6.2"
+rancher_url: "rancher.kwamlng.dev"
+rancher_adminPassword: ""
+
 ```
 
 ### Hosts
