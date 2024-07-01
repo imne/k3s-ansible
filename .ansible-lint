@@ -18,4 +18,3 @@ exclude_paths:
 
 skip_list:
   - 'fqcn-builtins'
-  - var-naming[no-role-prefix]

@@ -2,20 +2,11 @@
 name: "CI"
 on:
   pull_request:
-    types:
-      - opened
-      - synchronize
+  push:
+    branches:
+      - master
     paths-ignore:
-      - '**/.gitignore'
-      - '**/FUNDING.yml'
-      - '**/host.ini'
-      - '**/*.md'
-      - '**/.editorconfig'
-      - '**/ansible.example.cfg'
-      - '**/deploy.sh'
-      - '**/LICENSE'
-      - '**/reboot.sh'
-      - '**/reset.sh'
+      - '**/README.md'
 jobs:
   pre:
     uses: ./.github/workflows/cache.yml

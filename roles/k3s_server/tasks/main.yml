@@ -29,12 +29,9 @@
 - name: Deploy metallb manifest
   include_tasks: metallb.yml
   tags: metallb
-  when: kube_vip_lb_ip_range is not defined and (cilium_bgp is not defined or cilium_iface is not defined)
 
-- name: Deploy kube-vip manifest
-  include_tasks: kube-vip.yml
-  tags: kubevip
-  when: kube_vip_lb_ip_range is defined
+- name: Deploy cert manager manifest
+  include_tasks: cert_manager.yml
 
 - name: Init cluster inside the transient k3s-init service
   command:

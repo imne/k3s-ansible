@@ -37,11 +37,6 @@ systemd_dir: ""
 
 flannel_iface: ""
 
-#calico_iface: ""
-calico_ebpf: ""
-calico_cidr: ""
-calico_tag: ""
-
 apiserver_endpoint: ""
 
 k3s_token: "NA"
@@ -50,9 +45,6 @@ extra_server_args: ""
 extra_agent_args: ""
 
 kube_vip_tag_version: ""
-
-kube_vip_cloud_provider_tag_version: ""
-kube_vip_lb_ip_range: ""
 
 metal_lb_speaker_tag_version: ""
 metal_lb_controller_tag_version: ""

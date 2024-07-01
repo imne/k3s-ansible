@@ -1,0 +1,36 @@
+---
+- name: Create manifests directory on first master
+  file:
+    path: /var/lib/rancher/k3s/server/manifests
+    state: directory
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_hostname == hostvars[groups[group_name_master | default('master')][0]]['ansible_hostname']
+
+- name: "Download to first master: manifest for cert-manager"
+  ansible.builtin.get_url:
+    url: "https://github.com/jetstack/cert-manager/releases/download/{{ cert_manager_version }}/cert-manager.yaml"
+    dest: "/var/lib/rancher/k3s/server/manifests/cert-manager.yaml"
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_hostname == hostvars[groups[group_name_master | default('master')][0]]['ansible_hostname']
+
+- name: Copy cloudflare-api-token-secret manifest to first master
+  template:
+    src: "cloudflare-api-token-secret.yaml.j2"
+    dest: "/var/lib/rancher/k3s/server/manifests/cloudflare-api-token-secret.yaml"
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_hostname == hostvars[groups[group_name_master | default('master')][0]]['ansible_hostname']
+
+- name: Copy cluster issuer manifest to first master
+  template:
+    src: "cluster-issuer.yaml.j2"
+    dest: "/var/lib/rancher/k3s/server/manifests/cluster-issuer.yaml"
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_hostname == hostvars[groups[group_name_master | default('master')][0]]['ansible_hostname']

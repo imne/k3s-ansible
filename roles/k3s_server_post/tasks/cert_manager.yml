@@ -1,0 +1,49 @@
+---
+- name: Create manifests directory for temp configuration
+  file:
+    path: /tmp/k3s
+    state: directory
+    owner: "{{ ansible_user_id }}"
+    mode: 0755
+  with_items: "{{ groups[group_name_master | default('master')] }}"
+  run_once: true
+
+- name: Copy cloudflare-api-token-secret to first master
+  template:
+    src: "cloudflare-api-token-secret.yaml.j2"
+    dest: "/tmp/k3s/cloudflare-api-token-secret.yaml"
+    owner: root
+    group: root
+    mode: 0755
+  with_items: "{{ groups[group_name_master | default('master')] }}"
+  run_once: true
+
+- name: Copy cluster issuer to first master
+  template:
+    src: "cluster-issuer.yaml.j2"
+    dest: "/tmp/k3s/cluster-issuer.yaml"
+    owner: root
+    group: root
+    mode: 0755
+  with_items: "{{ groups[group_name_master | default('master')] }}"
+  run_once: true
+
+- name: Create cloudflare-api-token-secret
+  command: >-
+    k3s kubectl apply -f /tmp/k3s/cloudflare-api-token-secret.yaml
+    --timeout='{{ cert_manager_timeout }}'
+  register: this
+  changed_when: false
+  run_once: true
+  until: this.rc == 0
+  retries: 5
+
+- name: Create cluster-issuer
+  command: >-
+    k3s kubectl apply -f /tmp/k3s/cluster-issuer.yaml
+    --timeout='{{ cert_manager_timeout }}'
+  register: this
+  changed_when: false
+  run_once: true
+  until: this.rc == 0
+  retries: 5
