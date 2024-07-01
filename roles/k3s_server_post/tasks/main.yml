@@ -18,7 +18,6 @@
 - name: Deploy other utils 
   include_tasks: generic.yml
 
-
 - name: Remove tmp directory used for manifests
   file:
     path: /tmp/k3s

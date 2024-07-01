@@ -4,6 +4,57 @@
     k3s kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/{{ longhorn_version }}/deploy/longhorn.yaml
   register: this
   changed_when: false
+  with_items: "{{ groups[group_name_master | default('master')] }}"
+  run_once: true
+  until: this.rc == 0
+  retries: 5
+
+- name: Add traefik helm repo
+  command: >-
+    helm repo add traefik https://traefik.github.io/charts
+  register: this
+  changed_when: false
+  with_items: "{{ groups[group_name_master | default('master')] }}"
+  run_once: true
+  until: this.rc == 0
+  retries: 5
+
+- name: Add helm repo update
+  command: >-
+    helm repo update
+  register: this
+  changed_when: false
+  with_items: "{{ groups[group_name_master | default('master')] }}"
+  run_once: true
+  until: this.rc == 0
+  retries: 5
+
+- name: Add helm repo update
+  command: >-
+    helm repo update
+  register: this
+  changed_when: false
+  with_items: "{{ groups[group_name_master | default('master')] }}"
+  run_once: true
+  until: this.rc == 0
+  retries: 5
+
+- name: Create traefik namespace
+  command: >-
+    k3s kubectl create namespace traefik
+  register: this
+  changed_when: false
+  with_items: "{{ groups[group_name_master | default('master')] }}"
+  run_once: true
+  until: this.rc == 0
+  retries: 5
+
+- name: Install traefik 
+  command: >-
+    helm install --namespace=traefik --set="additionalArguments={--log.level=DEBUG}" traefik traefik/traefik
+  register: this
+  changed_when: false
+  with_items: "{{ groups[group_name_master | default('master')] }}"
   run_once: true
   until: this.rc == 0
   retries: 5
