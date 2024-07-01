@@ -1,4 +1,14 @@
 ---
+- name: install longhorn
+  command: >-
+    k3s kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/{{ longhorn_version }}/deploy/longhorn.yaml
+  register: this
+  changed_when: false
+  with_items: "{{ groups[group_name_master | default('master')] }}"
+  run_once: true
+  until: this.rc == 0
+  retries: 5
+
 - name: Add traefik helm repo
   command: >-
     helm repo add traefik https://traefik.github.io/charts
