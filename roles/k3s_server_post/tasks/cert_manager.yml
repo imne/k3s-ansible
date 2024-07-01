@@ -31,7 +31,6 @@
 - name: Create cloudflare-api-token-secret
   command: >-
     k3s kubectl apply -f /tmp/k3s/cloudflare-api-token-secret.yaml
-    --timeout='{{ cert_manager_timeout }}'
   register: this
   changed_when: false
   run_once: true
@@ -41,7 +40,6 @@
 - name: Create cluster-issuer
   command: >-
     k3s kubectl apply -f /tmp/k3s/cluster-issuer.yaml
-    --timeout='{{ cert_manager_timeout }}'
   register: this
   changed_when: false
   run_once: true
