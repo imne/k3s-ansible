@@ -10,7 +10,25 @@
 
 - name: Create ArgoCD ingress
   command: >-
-    k3s kubectl apply -f /tmp/k3s/argocd-ingress.yaml -n argocd
+    k3s kubectl apply -f /tmp/k3s/argocd-ingress.yaml
+  register: this
+  changed_when: false
+  run_once: true
+  until: this.rc == 0
+  retries: 5
+
+- name: Copy jenkins-ingress.yaml to master
+  template:
+    src: "jenkins-ingress.yaml.j2"
+    dest: "/tmp/k3s/jenkins-ingress.yaml"
+    owner: "{{ ansible_user_id }}"
+    mode: 0755
+  with_items: "{{ groups[group_name_master | default('master')] }}"
+  run_once: true
+
+- name: Create Jenkins ingress
+  command: >-
+    k3s kubectl apply -f /tmp/k3s/jenkins-ingress.yaml
   register: this
   changed_when: false
   run_once: true

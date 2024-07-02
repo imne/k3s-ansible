@@ -18,6 +18,9 @@
 - name: Deploy other utils 
   include_tasks: generic.yml
 
+- name: Setup Ingresses
+  include_tasks: ingress_setup.yml
+
 - name: Remove tmp directory used for manifests
   file:
     path: /tmp/k3s

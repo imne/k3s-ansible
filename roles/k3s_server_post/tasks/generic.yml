@@ -59,16 +59,6 @@
   until: this.rc == 0
   retries: 5
 
-- name: Create rancher namespace
-  command: >-
-    k3s kubectl create namespace cattle-system
-  register: this
-  changed_when: false
-  with_items: "{{ groups[group_name_master | default('master')] }}"
-  run_once: true
-  until: this.rc == 0
-  retries: 5
-
 - name: Create Jenkins namespace
   command: >-
     k3s kubectl create namespace jenkins
@@ -99,12 +89,22 @@
   until: this.rc == 0
   retries: 5
 
-- name: Install Rancher 
-  command: >-
-    helm install rancher rancher-stable/rancher --namespace cattle-system --set hostname={{ rancher_url }} --set bootstrapPassword={{ rancher_adminPassword }}
-  register: this
-  changed_when: false
-  with_items: "{{ groups[group_name_master | default('master')] }}"
-  run_once: true
-  until: this.rc == 0
-  retries: 5
+# - name: Create rancher namespace
+#   command: >-
+#     k3s kubectl create namespace cattle-system
+#   register: this
+#   changed_when: false
+#   with_items: "{{ groups[group_name_master | default('master')] }}"
+#   run_once: true
+#   until: this.rc == 0
+#   retries: 5
+
+# - name: Install Rancher 
+#   command: >-
+#     helm install rancher rancher-stable/rancher --namespace cattle-system --set hostname={{ rancher_url }} --set bootstrapPassword={{ rancher_adminPassword }}
+#   register: this
+#   changed_when: false
+#   with_items: "{{ groups[group_name_master | default('master')] }}"
+#   run_once: true
+#   until: this.rc == 0
+#   retries: 5

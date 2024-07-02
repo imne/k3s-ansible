@@ -1,24 +1,24 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: argocd-ingress
-  namespace: argocd
+  name: jenkins-ingress
+  namespace: jenkins
   annotations:
     cert-manager.io/cluster-issuer: ca-kwamlng-prod
-    external-dns.alpha.kubernetes.io/hostname: argocd.kwamlng.dev
+    external-dns.alpha.kubernetes.io/hostname: jenkins.kwamlng.dev
 spec:
   rules:
-  - host: argocd.kwamlng.dev
+  - host: jenkins.kwamlng.dev
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: argocd-server
+            name: jenkins
             port:
-              number: 443
+              number: 8080
   tls:
   - hosts:
-    - argocd.kwamlng.dev
-    secretName: argocd-tls
+    - jenkins.kwamlng.dev
+    secretName: jenkins-tls
