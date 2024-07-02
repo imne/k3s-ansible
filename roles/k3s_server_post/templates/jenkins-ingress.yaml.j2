@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-ingress
+  namespace: argocd
+  annotations:
+    cert-manager.io/cluster-issuer: ca-kwamlng-prod
+    external-dns.alpha.kubernetes.io/hostname: argocd.kwamlng.dev
+spec:
+  rules:
+  - host: argocd.kwamlng.dev
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: argocd-server
+            port:
+              number: 443
+  tls:
+  - hosts:
+    - argocd.kwamlng.dev
+    secretName: argocd-tls
