@@ -65,6 +65,7 @@ rancher_adminPassword: ""
 postgres_db_size: "5Gi"
 postgres_password: ""
 postgres_username: ""
+postgres_wait_timeout: ""
 
 keyclaok_args: "start-dev --hostname=keycloak.kwamlng.dev --spi-phone-default-service=dummy --spi-phone-default-target-hour-maximum=1000 --spi-phone-default-source-hour-maximum=1000 --spi-phone-default-token-expires-in=360 --spi-phone-default-mangifa-phone-default-region=ZA --spi-phone-default-master-phone-default-region=ZA"
 keyclaok_features: "token-exchange,admin-fine-grained-authz"
