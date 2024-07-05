@@ -109,21 +109,11 @@
 
 - name: Wait for Postgress resources
   command: >-
-    k3s kubectl wait {{ item.resource }}
-    --namespace='postgresql'
-    {% if item.name | default(False) -%}{{ item.name }}{%- endif %}
-    {% if item.selector | default(False) -%}--selector='{{ item.selector }}'{%- endif %}
-    {% if item.condition | default(False) -%}{{ item.condition }}{%- endif %}
-    --timeout='{{ postgres_wait_timeout }}'
+    k3s kubectl get po -o json -n postgresql
   changed_when: false
+  register: kubectl_get_pods
+  until: kubectl_get_pods.stdout|from_json|json_query('items[*].status.phase')|unique == ["Running"]
   run_once: true
-  with_items:
-    - description: available replicas for postgres database
-      resource: replicaset
-      selector: app=postgresql
-      condition: --for=jsonpath='{.status.availableReplicas}'=1
-  loop_control:
-    label: "{{ item.description }}"
 
 - name: Copy keycloak.yaml to master
   template:
