@@ -29,16 +29,6 @@
   until: this.rc == 0
   retries: 5
 
-- name: Add Rancher helm repo
-  command: >-
-    helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
-  register: this
-  changed_when: false
-  with_items: "{{ groups[group_name_master | default('master')] }}"
-  run_once: true
-  until: this.rc == 0
-  retries: 5
-
 - name: Add helm repo update
   command: >-
     helm repo update
@@ -114,7 +104,7 @@
   register: kubectl_get_pods
   until: kubectl_get_pods.stdout|from_json|json_query('items[*].status.phase')|unique == ["Running"]
   run_once: true
-  retries: 300
+  retries: 35
 
 #TODO - Add postgress DB restore and user creation
 
