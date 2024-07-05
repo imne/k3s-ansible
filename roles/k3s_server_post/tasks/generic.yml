@@ -89,22 +89,38 @@
   until: this.rc == 0
   retries: 5
 
-# - name: Create rancher namespace
-#   command: >-
-#     k3s kubectl create namespace cattle-system
-#   register: this
-#   changed_when: false
-#   with_items: "{{ groups[group_name_master | default('master')] }}"
-#   run_once: true
-#   until: this.rc == 0
-#   retries: 5
+- name: Copy postgres.yaml to master
+  template:
+    src: "postgres.yaml.j2"
+    dest: "/tmp/k3s/postgres.yaml"
+    owner: "{{ ansible_user_id }}"
+    mode: 0755
+  with_items: "{{ groups[group_name_master | default('master')] }}"
+  run_once: true
 
-# - name: Install Rancher 
-#   command: >-
-#     helm install rancher rancher-stable/rancher --namespace cattle-system --set hostname={{ rancher_url }} --set bootstrapPassword={{ rancher_adminPassword }}
-#   register: this
-#   changed_when: false
-#   with_items: "{{ groups[group_name_master | default('master')] }}"
-#   run_once: true
-#   until: this.rc == 0
-#   retries: 5
+- name: Setup Postgres DB
+  command: >-
+    k3s kubectl apply -f /tmp/k3s/postgres.yaml
+  register: this
+  changed_when: false
+  run_once: true
+  until: this.rc == 0
+  retries: 5
+
+- name: Copy keycloak.yaml to master
+  template:
+    src: "keycloak.yaml.j2"
+    dest: "/tmp/k3s/keycloak.yaml"
+    owner: "{{ ansible_user_id }}"
+    mode: 0755
+  with_items: "{{ groups[group_name_master | default('master')] }}"
+  run_once: true
+
+- name: Setup keycloak 
+  command: >-
+    k3s kubectl apply -f /tmp/k3s/keycloak.yaml
+  register: this
+  changed_when: false
+  run_once: true
+  until: this.rc == 0
+  retries: 5

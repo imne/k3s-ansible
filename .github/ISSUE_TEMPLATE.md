@@ -59,8 +59,19 @@ externaldns_pihole_server: ""
 externaldns_password: ""
 
 longhorn_version: "v1.6.2"
-rancher_url: "rancher.kwamlng.dev"
+rancher_url: "rancherUrl"
 rancher_adminPassword: ""
+
+postgres_db_size: "5Gi"
+postgres_password: ""
+postgres_username: ""
+
+keyclaok_args: "start-dev --hostname=keycloak.kwamlng.dev --spi-phone-default-service=dummy --spi-phone-default-target-hour-maximum=1000 --spi-phone-default-source-hour-maximum=1000 --spi-phone-default-token-expires-in=360 --spi-phone-default-mangifa-phone-default-region=ZA --spi-phone-default-master-phone-default-region=ZA"
+keyclaok_features: "token-exchange,admin-fine-grained-authz"
+keycloak_password: ""
+keycloak_user: ""
+keycloak_db_password: ""
+keycloak_db_user: ""
 
 ```
 
