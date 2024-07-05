@@ -114,6 +114,9 @@
   register: kubectl_get_pods
   until: kubectl_get_pods.stdout|from_json|json_query('items[*].status.phase')|unique == ["Running"]
   run_once: true
+  retries: 300
+
+#TODO - Add postgress DB restore and user creation
 
 - name: Copy keycloak.yaml to master
   template:
