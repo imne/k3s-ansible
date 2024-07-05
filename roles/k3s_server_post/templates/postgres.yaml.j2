@@ -31,6 +31,8 @@ spec:
           value: {{ postgres_username }}
         - name: POSTGRES_PASSWORD
           value: {{ postgres_password }}
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
         volumeMounts:
         - name: postgresql-data
           mountPath: /var/lib/postgresql/data
