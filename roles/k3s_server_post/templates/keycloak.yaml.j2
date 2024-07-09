@@ -18,13 +18,9 @@ spec:
       labels:
         app: keycloak
     spec:
-      volumes:
-        - name: providers
-          emptyDir:
-            sizeLimit: 500Mi
       containers:
       - name: keycloak
-        image: quay.io/keycloak/keycloak:21.1.2
+        image: quay.io/keycloak/keycloak:25.0.1
         args: ["{{ keyclaok_args }}"]
         imagePullPolicy: Always
         ports:
@@ -50,32 +46,11 @@ spec:
           value: {{ keycloak_password }}
         - name: KC_FEATURES
           value: {{ keyclaok_features }}
-      initContainers:
-        - name: download-sms-provider-libraries
-          image: alpine
-          command: ["/bin/sh","-c"]
-          args:
-            - |
-              cd /opt/keycloak/providers/ &&
-              wget https://github.com/cooperlyt/keycloak-phone-provider/releases/download/21.0.2_phone-2.3.3/keycloak-phone-provider.jar &&
-              wget https://github.com/cooperlyt/keycloak-phone-provider/releases/download/21.0.2_phone-2.3.3/keycloak-phone-provider.resources.jar &&
-              wget https://github.com/cooperlyt/keycloak-phone-provider/releases/download/21.0.2_phone-2.3.3/keycloak-sms-provider-aliyun.jar &&
-              wget https://github.com/cooperlyt/keycloak-phone-provider/releases/download/21.0.2_phone-2.3.3/keycloak-sms-provider-aws-sns.jar &&
-              wget https://github.com/cooperlyt/keycloak-phone-provider/releases/download/21.0.2_phone-2.3.3/keycloak-sms-provider-cloopen.jar &&
-              wget https://github.com/cooperlyt/keycloak-phone-provider/releases/download/21.0.2_phone-2.3.3/keycloak-sms-provider-dummy.jar &&
-              wget https://github.com/cooperlyt/keycloak-phone-provider/releases/download/21.0.2_phone-2.3.3/keycloak-sms-provider-tencent.jar &&
-              wget https://github.com/cooperlyt/keycloak-phone-provider/releases/download/21.0.2_phone-2.3.3/keycloak-sms-provider-totalvoice.jar &&
-              wget https://github.com/cooperlyt/keycloak-phone-provider/releases/download/21.0.2_phone-2.3.3/keycloak-sms-provider-twilio.jar &&
-              wget https://github.com/cooperlyt/keycloak-phone-provider/releases/download/21.0.2_phone-2.3.3/keycloak-sms-provider-yunxin.jar &&
-              ls -lrth
-          volumeMounts:
-            - mountPath: /opt/keycloak/providers/
-              name: providers
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: keycloak
+  name: keycloak-service
   namespace: keycloak
   labels:
     app: keycloak
@@ -105,7 +80,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: keycloak.keycloak.svc.cluster.local
+            name: keycloak-service
             port:
               number: 8080
   tls:
