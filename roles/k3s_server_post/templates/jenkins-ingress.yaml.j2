@@ -1,10 +1,10 @@
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: jenkins-ingress
   namespace: jenkins
   annotations:
-    cert-manager.io/cluster-issuer: ca-kwamlng-prod
     external-dns.alpha.kubernetes.io/hostname: jenkins.{{ cluster_domain }}
 spec:
   rules:
@@ -21,4 +21,4 @@ spec:
   tls:
   - hosts:
     - jenkins.{{ cluster_domain }}
-    secretName: jenkins-tls
+    secretName: default-kwamlng-tls

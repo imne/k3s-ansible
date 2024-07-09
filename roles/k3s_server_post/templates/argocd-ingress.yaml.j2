@@ -4,7 +4,6 @@ metadata:
   name: argocd-ingress
   namespace: argocd
   annotations:
-    cert-manager.io/cluster-issuer: ca-kwamlng-prod
     external-dns.alpha.kubernetes.io/hostname: argocd.{{ cluster_domain }}
 spec:
   rules:
@@ -21,4 +20,4 @@ spec:
   tls:
   - hosts:
     - argocd.{{ cluster_domain }}
-    secretName: argocd-tls
+    secretName: default-kwamlng-tls
