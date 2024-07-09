@@ -100,21 +100,21 @@ spec:
         - name: KEYCLOAK_PASSWORD
           value: {{ keycloak_password }}
         - name: KC_HOSTNAME_STRICT
-          value: false
+          value: 'false'
         - name: KC_HOSTNAME_STRICT_HTTPS
-          value: false
+          value: 'false'
         - name: PROXY_ADDRESS_FORWARDING
-          value: true
+          value: 'true'
         - name: KC_PROXY
-          value: edge
+          value: 'edge'
         - name: KC_HTTPS_PORT
-          value: 443
+          value: "443"
         - name: KC_HTTPS_CERTIFICATE_FILE
           value: /etc/nginx/ssl/tls.crt
         - name: KC_HTTPS_CERTIFICATE_KEY_FILE
           value: /etc/nginx/ssl/tls.key
         - name: KC_HTTP_PORT
-          value: 8080
+          value: "8080"
         - name: KC_FEATURES
           value: {{ keyclaok_features }}
       initContainers:
