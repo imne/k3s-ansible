@@ -70,7 +70,7 @@
 
 - name: Install traefik 
   command: >-
-    helm install --namespace=traefik --set providers.kubernetesIngress.publishedService.enabled=true --set="additionalArguments={--api.dashboard=true,--log.level=DEBUG,--serversTransport.insecureSkipVerify=true}" traefik traefik/traefik
+    helm install --namespace=traefik --set providers.kubernetesCRD.enabled=true --set rbac.enabled=true --set ports.web.redirectTo.port=websecure --set ports.websecure.tls.enabled=true --set providers.kubernetesIngress.publishedService.enabled=true --set="additionalArguments={--api.dashboard=true,--log.level=DEBUG,--serversTransport.insecureSkipVerify=true}" traefik traefik/traefik
   register: this
   changed_when: false
   with_items: "{{ groups[group_name_master | default('master')] }}"
