@@ -31,6 +31,18 @@ spec:
     kind: ClusterIssuer
     group: cert-manager.io
 ---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: keycloak-credentials-secret
+  namespace: keycloak
+type: Opaque
+data:
+  KC_DB_USERNAME: {{ keycloak_db_user }}
+  KC_DB_PASSWORD: {{ keycloak_db_password }}
+  KEYCLOAK_ADMIN: {{ keycloak_user }}
+  KEYCLOAK_ADMIN_PASSWORD: {{ keycloak_password }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -50,6 +62,9 @@ spec:
         - name: tls
           secret:
             secretName: keycloak-tls
+        - name: credentials-volume
+          secret:
+            secretName: keycloak-credentials-secret
         - name: providers
           emptyDir:
             sizeLimit: 500Mi
@@ -68,20 +83,34 @@ spec:
             path: /realms/master
             port: 8080 
         env:
-        - name: DB_VENDOR
-          value: postgres
-        - name: DB_ADDR
+        - name: KC_LOG_LEVEL
+          value: 'DEBUG'
+        - name: KC_DB
+          value: 'postgres'
+        - name: KC_DB_URL
           value: postgresql.postgresql.svc.cluster.local
-        - name: DB_DATABASE
-          value: keycloak
-        - name: DB_USER
-          value: {{ keycloak_db_user }}
-        - name: DB_PASSWORD
-          value: {{ keycloak_db_password }}
-        - name: KEYCLOAK_USER
-          value: {{ keycloak_user }}
-        - name: KEYCLOAK_PASSWORD
-          value: {{ keycloak_password }}
+        - name: KC_DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-credentials-secret
+              key: KC_DB_USERNAME
+        - name: KC_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-credentials-secret
+              key: KC_DB_PASSWORD
+        - name: KC_DB_SCHEMA
+          value: KEYCLOAK
+        - name: KEYCLOAK_ADMIN
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-credentials-secret
+              key: KEYCLOAK_ADMIN
+        - name: KEYCLOAK_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-credentials-secret
+              key: KEYCLOAK_ADMIN_PASSWORD
         - name: KC_HOSTNAME_STRICT
           value: 'false'
         - name: KC_HOSTNAME_STRICT_HTTPS
@@ -98,6 +127,22 @@ spec:
           value: /etc/nginx/ssl/tls.key
         - name: KC_HTTP_PORT
           value: "8080"
+        - name: KC_HEALTH_ENABLED
+          value: 'true'
+        - name: KC_METRICS_ENABLED
+          value: 'true'
+        - name: KEYCLOAK_SERVER_TIME_SKEW
+          value: "60"
+        - name: KEYCLOAK_ACCESS_TOKEN_LIFESPAN
+          value: "3600"
+        - name: KEYCLOAK_ACCESS_CODE_LIFESPAN
+          value: "600"
+        - name: KEYCLOAK_REMEMBER_ME
+          value: "true"
+        - name: KEYCLOAK_REMEMBER_ME_LIFESPAN
+          value: "2592000"
+        - name: TZ
+          value: 'Africa/Johannesburg'
         - name: KC_FEATURES
           value: {{ keyclaok_features }}
       initContainers:
