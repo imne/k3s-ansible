@@ -28,6 +28,16 @@
   with_items: "{{ groups[group_name_master | default('master')] }}"
   run_once: true
 
+- name: Copy self signed cluster issuer to first master
+  template:
+    src: "selfsigned-cluster-issuer.yaml.j2"
+    dest: "/tmp/k3s/selfsigned-cluster-issuer.yaml"
+    owner: root
+    group: root
+    mode: 0755
+  with_items: "{{ groups[group_name_master | default('master')] }}"
+  run_once: true
+
 - name: Create cloudflare-api-token-secret
   command: >-
     k3s kubectl apply -f /tmp/k3s/cloudflare-api-token-secret.yaml
@@ -40,6 +50,15 @@
 - name: Create cluster-issuer
   command: >-
     k3s kubectl apply -f /tmp/k3s/cluster-issuer.yaml
+  register: this
+  changed_when: false
+  run_once: true
+  until: this.rc == 0
+  retries: 5
+
+- name: Create selfsigned-cluster-issuer
+  command: >-
+    k3s kubectl apply -f /tmp/k3s/selfsigned-cluster-issuer.yaml
   register: this
   changed_when: false
   run_once: true

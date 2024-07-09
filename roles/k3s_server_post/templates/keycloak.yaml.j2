@@ -3,6 +3,32 @@ kind: Namespace
 metadata:
   name: keycloak
 ---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: keycloak-tls
+spec:
+  secretName: "keycloak-tls"
+  duration: 2060h0m0s # 90d
+  renewBefore: 48h0m0s # 2d
+  subject:
+    organizations:
+      - KwaMalinga Home Lab
+  commonName: keycloak.{{ cluster_domain }}
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  usages:
+    - server auth
+    - client auth
+  dnsNames:
+    - keycloak.{{ cluster_domain }}
+  issuerRef:
+    name: ca-kwamlng-selfsigned
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -46,7 +72,7 @@ spec:
   tls:
   - hosts:
     - keycloak.{{ cluster_domain }}
-    secretName: keycloak-tls
+    secretName: keycloak-kwamlng-dev-tls
 ---
 apiVersion: apps/v1
 kind: Deployment
