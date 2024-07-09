@@ -9,6 +9,15 @@
   until: this.rc == 0
   retries: 5
 
+- name: Wait for longhorn-system to finish installing resources
+  command: >-
+    k3s kubectl get po -o json -n longhorn-system
+  changed_when: false
+  register: kubectl_get_pods
+  until: kubectl_get_pods.stdout|from_json|json_query('items[*].status.phase')|unique == ["Running"]
+  run_once: true
+  retries: 35
+
 - name: Add traefik helm repo
   command: >-
     helm repo add traefik https://traefik.github.io/charts
