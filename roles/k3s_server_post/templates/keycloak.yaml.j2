@@ -3,6 +3,26 @@ kind: Namespace
 metadata:
   name: keycloak
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak-service
+  namespace: keycloak
+  labels:
+    app: keycloak
+spec:
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+    - name: https
+      port: 443
+      targetPort: 443
+      protocol: TCP
+  selector:
+    app: keycloak
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -27,26 +47,6 @@ spec:
   - hosts:
     - keycloak.{{ cluster_domain }}
     secretName: keycloak-tls
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: keycloak-service
-  namespace: keycloak
-  labels:
-    app: keycloak
-spec:
-  ports:
-    - name: http
-      port: 8080
-      targetPort: 8080
-      protocol: TCP
-    - name: https
-      port: 443
-      targetPort: 443
-      protocol: TCP
-  selector:
-    app: keycloak
 ---
 apiVersion: apps/v1
 kind: Deployment
