@@ -84,11 +84,11 @@ spec:
             port: 8080 
         env:
         - name: KC_LOG_LEVEL
-          value: 'DEBUG'
+          value: 'INFO'
         - name: KC_DB
           value: 'postgres'
         - name: KC_DB_URL
-          value: postgresql.postgresql.svc.cluster.local
+          value: jdbc:postgresql://postgresql.postgresql.svc.cluster.local:5432/dev
         - name: KC_DB_USERNAME
           valueFrom:
             secretKeyRef:
