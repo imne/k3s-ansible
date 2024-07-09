@@ -119,10 +119,10 @@ metadata:
   namespace: keycloak
   annotations:
     cert-manager.io/cluster-issuer: ca-kwamlng-prod
-    external-dns.alpha.kubernetes.io/hostname: keycloak.kwamlng.dev
+    external-dns.alpha.kubernetes.io/hostname: keycloak.{{ cluster_domain }}
 spec:
   rules:
-  - host: keycloak.kwamlng.dev
+  - host: keycloak.{{ cluster_domain }}
     http:
       paths:
       - path: /
@@ -134,5 +134,5 @@ spec:
               number: 443
   tls:
   - hosts:
-    - keycloak.kwamlng.dev
+    - keycloak.{{ cluster_domain }}
     secretName: keycloak-tls

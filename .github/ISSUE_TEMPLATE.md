@@ -35,6 +35,7 @@ k3s_version: ""
 ansible_user: NA
 systemd_dir: ""
 
+cluster_domain: ""
 cert_manager_notify_email: ""
 cert_manager_version: ""
 cert_manager_cloudflare_api_token: ""
@@ -67,7 +68,7 @@ postgres_password: ""
 postgres_username: ""
 postgres_wait_timeout: ""
 
-keyclaok_args: "start-dev --hostname=keycloak.kwamlng.dev --spi-phone-default-service=dummy --spi-phone-default-target-hour-maximum=1000 --spi-phone-default-source-hour-maximum=1000 --spi-phone-default-token-expires-in=360 --spi-phone-default-mangifa-phone-default-region=ZA --spi-phone-default-master-phone-default-region=ZA"
+keyclaok_args: "start-dev --hostname=keycloak.{{ cluster_domain }} --spi-phone-default-service=dummy --spi-phone-default-target-hour-maximum=1000 --spi-phone-default-source-hour-maximum=1000 --spi-phone-default-token-expires-in=360 --spi-phone-default-mangifa-phone-default-region=ZA --spi-phone-default-master-phone-default-region=ZA"
 keyclaok_features: "token-exchange,admin-fine-grained-authz"
 keycloak_password: ""
 keycloak_user: ""

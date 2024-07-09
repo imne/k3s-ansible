@@ -5,10 +5,10 @@ metadata:
   namespace: argocd
   annotations:
     cert-manager.io/cluster-issuer: ca-kwamlng-prod
-    external-dns.alpha.kubernetes.io/hostname: argocd.kwamlng.dev
+    external-dns.alpha.kubernetes.io/hostname: argocd.{{ cluster_domain }}
 spec:
   rules:
-  - host: argocd.kwamlng.dev
+  - host: argocd.{{ cluster_domain }}
     http:
       paths:
       - path: /
@@ -20,5 +20,5 @@ spec:
               number: 443
   tls:
   - hosts:
-    - argocd.kwamlng.dev
+    - argocd.{{ cluster_domain }}
     secretName: argocd-tls

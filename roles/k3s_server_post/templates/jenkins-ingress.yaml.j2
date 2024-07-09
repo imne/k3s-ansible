@@ -5,10 +5,10 @@ metadata:
   namespace: jenkins
   annotations:
     cert-manager.io/cluster-issuer: ca-kwamlng-prod
-    external-dns.alpha.kubernetes.io/hostname: jenkins.kwamlng.dev
+    external-dns.alpha.kubernetes.io/hostname: jenkins.{{ cluster_domain }}
 spec:
   rules:
-  - host: jenkins.kwamlng.dev
+  - host: jenkins.{{ cluster_domain }}
     http:
       paths:
       - path: /
@@ -20,5 +20,5 @@ spec:
               number: 8080
   tls:
   - hosts:
-    - jenkins.kwamlng.dev
+    - jenkins.{{ cluster_domain }}
     secretName: jenkins-tls

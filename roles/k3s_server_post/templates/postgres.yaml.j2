@@ -54,7 +54,7 @@ metadata:
   labels:
     app: postgresql
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: postgres.kwamlng.dev
+    external-dns.alpha.kubernetes.io/hostname: postgres.{{ cluster_domain }}
 spec:
   type: LoadBalancer
   ports:
