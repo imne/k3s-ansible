@@ -59,9 +59,6 @@ spec:
         app: keycloak
     spec:
       volumes:
-        - name: tls
-          secret:
-            secretName: keycloak-tls
         - name: credentials-volume
           secret:
             secretName: keycloak-credentials-secret
@@ -77,7 +74,6 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
-        - containerPort: 443
         readinessProbe:
           httpGet:
             path: /realms/master
@@ -119,12 +115,6 @@ spec:
           value: 'true'
         - name: KC_PROXY
           value: 'edge'
-        - name: KC_HTTPS_PORT
-          value: "443"
-        - name: KC_HTTPS_CERTIFICATE_FILE
-          value: /etc/nginx/ssl/tls.crt
-        - name: KC_HTTPS_CERTIFICATE_KEY_FILE
-          value: /etc/nginx/ssl/tls.key
         - name: KC_HTTP_PORT
           value: "8080"
         - name: KC_HEALTH_ENABLED
@@ -166,8 +156,6 @@ spec:
           volumeMounts:
             - mountPath: /opt/keycloak/providers/
               name: providers
-            - name: tls
-              mountPath: /etc/nginx/ssl/
 ---
 apiVersion: v1
 kind: Service
