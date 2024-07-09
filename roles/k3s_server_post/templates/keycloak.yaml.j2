@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -7,6 +8,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: keycloak-tls
+  namespace: keycloak
 spec:
   secretName: "keycloak-tls"
   duration: 2060h0m0s # 90d
@@ -28,51 +30,6 @@ spec:
     name: ca-kwamlng-selfsigned
     kind: ClusterIssuer
     group: cert-manager.io
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: keycloak-service
-  namespace: keycloak
-  labels:
-    app: keycloak
-spec:
-  ports:
-    - name: http
-      port: 8080
-      targetPort: 8080
-      protocol: TCP
-    - name: https
-      port: 443
-      targetPort: 443
-      protocol: TCP
-  selector:
-    app: keycloak
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: keycloak-ingress
-  namespace: keycloak
-  annotations:
-    cert-manager.io/cluster-issuer: ca-kwamlng-prod
-    external-dns.alpha.kubernetes.io/hostname: keycloak.{{ cluster_domain }}
-spec:
-  rules:
-  - host: keycloak.{{ cluster_domain }}
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: keycloak-service
-            port:
-              number: 443
-  tls:
-  - hosts:
-    - keycloak.{{ cluster_domain }}
-    secretName: keycloak-kwamlng-dev-tls
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -166,3 +123,48 @@ spec:
               name: providers
             - name: tls
               mountPath: /etc/nginx/ssl/
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak-service
+  namespace: keycloak
+  labels:
+    app: keycloak
+spec:
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+    - name: https
+      port: 443
+      targetPort: 443
+      protocol: TCP
+  selector:
+    app: keycloak
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: keycloak-ingress
+  namespace: keycloak
+  annotations:
+    cert-manager.io/cluster-issuer: ca-kwamlng-prod
+    external-dns.alpha.kubernetes.io/hostname: keycloak.{{ cluster_domain }}
+spec:
+  rules:
+  - host: keycloak.{{ cluster_domain }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: keycloak-service
+            port:
+              number: 443
+  tls:
+  - hosts:
+    - keycloak.{{ cluster_domain }}
+    secretName: keycloak-kwamlng-dev-tls
