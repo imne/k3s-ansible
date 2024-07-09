@@ -19,16 +19,22 @@ spec:
         app: keycloak
     spec:
       volumes:
+        - name: tls
+          secret:
+            secretName: "keycloak-tls"
         - name: providers
           emptyDir:
             sizeLimit: 500Mi
       containers:
       - name: keycloak
         image: quay.io/keycloak/keycloak:21.1.2
+        tty: true
+        stdin: true
         args: ["{{ keyclaok_args }}"]
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
+        - containerPort: 443
         readinessProbe:
           httpGet:
             path: /realms/master
@@ -48,6 +54,22 @@ spec:
           value: {{ keycloak_user }}
         - name: KEYCLOAK_PASSWORD
           value: {{ keycloak_password }}
+        - name: KC_HOSTNAME_STRICT
+          value: 'false'
+        - name: KC_HOSTNAME_STRICT_HTTPS
+          value: 'false'
+        - name: PROXY_ADDRESS_FORWARDING
+          value: 'true'
+        - name: KC_PROXY
+          value: 'edge'
+        - name: KC_HTTPS_PORT
+          value: 443
+        - name: KC_HTTPS_CERTIFICATE_FILE
+          value: /etc/nginx/ssl/tls.crt
+        - name: KC_HTTPS_CERTIFICATE_KEY_FILE
+          value: /etc/nginx/ssl/tls.key
+        - name: KC_HTTP_PORT
+          value: 8080
         - name: KC_FEATURES
           value: {{ keyclaok_features }}
       initContainers:
@@ -71,6 +93,8 @@ spec:
           volumeMounts:
             - mountPath: /opt/keycloak/providers/
               name: providers
+            - name: tls
+              mountPath: /etc/nginx/ssl/
 ---
 apiVersion: v1
 kind: Service
@@ -107,7 +131,7 @@ spec:
           service:
             name: keycloak-service
             port:
-              number: 8080
+              number: 443
   tls:
   - hosts:
     - keycloak.kwamlng.dev
