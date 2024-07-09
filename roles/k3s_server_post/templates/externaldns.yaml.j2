@@ -8,7 +8,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: external-dns
-  namespace: externaldns
 rules:
 - apiGroups: [""]
   resources: ["services", "endpoints", "pods"]
