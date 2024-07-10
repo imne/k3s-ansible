@@ -23,8 +23,8 @@
   include_tasks: http_proxy.yml
   when: proxy_env is defined
 
-# - name: Deploy vip manifest
-#   include_tasks: vip.yml
+- name: Deploy vip manifest
+  include_tasks: vip.yml
 
 - name: Deploy metallb manifest
   include_tasks: metallb.yml
