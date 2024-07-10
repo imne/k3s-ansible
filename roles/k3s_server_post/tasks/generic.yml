@@ -103,7 +103,7 @@
   retries: 5
 
 - name: Postgres data backup restore
-  command: >-
+  shell: >-
     cat /backup/db_backup_latest.sql | k3s kubectl -n postgresql exec -it postgresql-0 -- psql -U admin -d dev
   register: this
   changed_when: false
