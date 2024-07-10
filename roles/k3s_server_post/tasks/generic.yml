@@ -18,52 +18,36 @@
   run_once: true
   retries: 35
 
-- name: Add traefik helm repo
-  command: >-
-    helm repo add traefik https://traefik.github.io/charts
-  register: this
-  changed_when: false
+- name: Copy postgres.yaml to master
+  template:
+    src: "postgres.yaml.j2"
+    dest: "/tmp/k3s/postgres.yaml"
+    owner: "{{ ansible_user_id }}"
+    mode: 0755
   with_items: "{{ groups[group_name_master | default('master')] }}"
   run_once: true
-  until: this.rc == 0
-  retries: 5
 
-- name: Add Jenkins helm repo
-  command: >-
-    helm repo add jenkins https://charts.jenkins.io
-  register: this
-  changed_when: false
+- name: Copy keycloak.yaml to master
+  template:
+    src: "keycloak.yaml.j2"
+    dest: "/tmp/k3s/keycloak.yaml"
+    owner: "{{ ansible_user_id }}"
+    mode: 0755
   with_items: "{{ groups[group_name_master | default('master')] }}"
   run_once: true
-  until: this.rc == 0
-  retries: 5
 
-- name: Add helm repo update
-  command: >-
-    helm repo update
+- name: Add Helm Repos & create namespaces
+  command: "{{ item }}"
   register: this
   changed_when: false
-  with_items: "{{ groups[group_name_master | default('master')] }}"
-  run_once: true
-  until: this.rc == 0
-  retries: 5
-
-- name: Create traefik namespace
-  command: >-
-    k3s kubectl create namespace traefik
-  register: this
-  changed_when: false
-  with_items: "{{ groups[group_name_master | default('master')] }}"
-  run_once: true
-  until: this.rc == 0
-  retries: 5
-
-- name: Create Jenkins namespace
-  command: >-
-    k3s kubectl create namespace jenkins
-  register: this
-  changed_when: false
-  with_items: "{{ groups[group_name_master | default('master')] }}"
+  with_items:
+  - helm repo add traefik https://traefik.github.io/charts
+  - helm repo add bitnami https://charts.bitnami.com/bitnami
+  - helm repo add jenkins https://charts.jenkins.io
+  - helm repo update
+  - k3s kubectl create namespace traefik
+  - k3s kubectl create namespace jenkins
+  - k3s kubectl create namespace harbor
   run_once: true
   until: this.rc == 0
   retries: 5
@@ -88,15 +72,6 @@
   until: this.rc == 0
   retries: 5
 
-- name: Copy postgres.yaml to master
-  template:
-    src: "postgres.yaml.j2"
-    dest: "/tmp/k3s/postgres.yaml"
-    owner: "{{ ansible_user_id }}"
-    mode: 0755
-  with_items: "{{ groups[group_name_master | default('master')] }}"
-  run_once: true
-
 - name: Setup Postgres DB
   command: >-
     k3s kubectl apply -f /tmp/k3s/postgres.yaml
@@ -117,18 +92,35 @@
 
 #TODO - Add postgress DB restore and user creation
 
-- name: Copy keycloak.yaml to master
-  template:
-    src: "keycloak.yaml.j2"
-    dest: "/tmp/k3s/keycloak.yaml"
-    owner: "{{ ansible_user_id }}"
-    mode: 0755
-  with_items: "{{ groups[group_name_master | default('master')] }}"
-  run_once: true
-
 - name: Setup keycloak 
   command: >-
     k3s kubectl apply -f /tmp/k3s/keycloak.yaml
+  register: this
+  changed_when: false
+  run_once: true
+  until: this.rc == 0
+  retries: 5
+
+#helm install --namespace harbor --set ingress.core.hostname=harbor.kwamlng.dev --set exposureType=ingress --set service.type=ClusterIP --set persistence.enabled=true  --set persistence.persistentVolumeClaim.registry.size=25Gi --set externalURL=https://harbor.kwamlng.dev --set externalDatabase.host=postgresql.postgresql.svc.cluster.local --set externalDatabase.password=passwd1 --set externalDatabase.port=5432 --set externalDatabase.user=harbor --set externalDatabase.sslmode=disable --set externalDatabase.coreDatabase=dev --set postgresql.enabled=false --set adminPassword=passwd harbor bitnami/harbor
+- name: Setup Harbor 
+  command: >-
+    helm install 
+    --namespace harbor 
+    --set ingress.core.hostname=harbor.{{ cluster_domain }} 
+    --set exposureType=ingress 
+    --set service.type=ClusterIP 
+    --set persistence.enabled=true 
+    --set persistence.persistentVolumeClaim.registry.size=25Gi 
+    --set externalURL=https://harbor.{{ cluster_domain }} 
+    --set externalDatabase.host=postgresql.postgresql.svc.cluster.local 
+    --set externalDatabase.password={{ postgres_password }} 
+    --set externalDatabase.port=5432 
+    --set externalDatabase.user=harbor 
+    --set externalDatabase.sslmode=disable 
+    --set externalDatabase.coreDatabase=dev 
+    --set postgresql.enabled=false 
+    --set adminPassword={{ postgres_password }} 
+    harbor bitnami/harbor
   register: this
   changed_when: false
   run_once: true
