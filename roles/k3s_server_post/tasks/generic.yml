@@ -90,7 +90,7 @@
   run_once: true
   retries: 35
 
-- name: Postgres data restore
+- name: Postgres data backup download
   command: "{{ item }}"
   register: this
   changed_when: false
@@ -98,7 +98,16 @@
   - rm -rf /backup
   - mkdir /backup
   - aws s3 cp s3://k8s-backup-homelab/postgres/db_backup_latest.sql /backup/db_backup_latest.sql
-  - k3s kubectl -n postgresql exec -it postgresql-0 -- psql -U admin -d dev < /backup/db_backup_latest.sql
+  run_once: true
+  until: this.rc == 0
+  retries: 5
+
+- name: Postgres data backup restore
+  command: "{{ item }}"
+  register: this
+  changed_when: false
+  with_items:
+  - kubectl -n postgresql exec -it postgresql-0 -- psql -U admin -d dev < /backup/db_backup_latest.sql
   - rm -rf /backup
   run_once: true
   until: this.rc == 0
