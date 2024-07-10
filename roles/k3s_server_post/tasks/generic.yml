@@ -107,7 +107,7 @@
   register: this
   changed_when: false
   with_items:
-  - kubectl -n postgresql exec -it postgresql-0 -- psql -U admin -d dev < /backup/db_backup_latest.sql
+  - cat /backup/db_backup_latest.sql | kubectl -n postgresql exec -i postgresql-0 -- psql -U admin -d dev
   - rm -rf /backup
   run_once: true
   until: this.rc == 0
