@@ -83,6 +83,9 @@ postgres_password: ""
 postgres_username: ""
 postgres_wait_timeout: ""
 
+#harbor
+harbor_storage_size: "25Gi"
+
 #cluster domain to use
 cluster_domain: "kwamlng.dev"
 

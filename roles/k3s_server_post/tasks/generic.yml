@@ -110,7 +110,7 @@
     --set exposureType=ingress 
     --set service.type=ClusterIP 
     --set persistence.enabled=true 
-    --set persistence.persistentVolumeClaim.registry.size=25Gi 
+    --set persistence.persistentVolumeClaim.registry.size={{ harbor_storage_size }} 
     --set externalURL=https://harbor.{{ cluster_domain }} 
     --set externalDatabase.host=postgresql.postgresql.svc.cluster.local 
     --set externalDatabase.password={{ postgres_password }} 
@@ -119,7 +119,7 @@
     --set externalDatabase.sslmode=disable 
     --set externalDatabase.coreDatabase=dev 
     --set postgresql.enabled=false 
-    --set adminPassword={{ postgres_password }} 
+    --set adminPassword={{ externaldns_password }} 
     harbor bitnami/harbor
   register: this
   changed_when: false

@@ -41,7 +41,7 @@ metadata:
 spec:
   secretName: default-kwamlng-tls
   issuerRef:
-    name: ca-kwamlng-prod
+    name: ca-kwamlng-{{ cert_manager_environment }}
     kind: ClusterIssuer
   commonName: "*.{{ cluster_domain }}"
   dnsNames:
