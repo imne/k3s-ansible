@@ -1,0 +1,8 @@
+---
+- name: Run Process to Backup Postgres DB
+  include_tasks: backup_upload_to_aws.yml
+
+- name: Remove tmp directory used for backup files
+  file:
+    path: /tmp/backup
+    state: absent

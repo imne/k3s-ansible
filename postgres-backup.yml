@@ -1,0 +1,8 @@
+---
+
+- name: Backup postgres database
+  hosts: master
+  environment: "{{ proxy_env | default({}) }}"
+  roles:
+    - role: postgres_backup
+      become: true

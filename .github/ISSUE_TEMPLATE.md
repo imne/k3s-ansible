@@ -75,6 +75,10 @@ keycloak_user: ""
 keycloak_db_password: ""
 keycloak_db_user: ""
 
+AWS_ACCESS_KEY_ID: ""
+AWS_SECRET_ACCESS_KEY: ""
+AWS_DEFAULT_REGION: ""
+s3_backup_bucket_name: ""
 ```
 
 ### Hosts
