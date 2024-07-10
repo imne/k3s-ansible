@@ -103,12 +103,19 @@
   retries: 5
 
 - name: Postgres data backup restore
-  command: "{{ item }}"
+  command: >-
+    cat /backup/db_backup_latest.sql | k3s kubectl -n postgresql exec -it postgresql-0 -- psql -U admin -d dev
   register: this
   changed_when: false
-  with_items:
-  - cat /backup/db_backup_latest.sql | kubectl -n postgresql exec -it postgresql-0 -- psql -U admin -d dev
-  - rm -rf /backup
+  run_once: true
+  until: this.rc == 0
+  retries: 1
+
+- name: Delete postgress backup file
+  command: >-
+    rm -rf /backup
+  register: this
+  changed_when: false
   run_once: true
   until: this.rc == 0
   retries: 5
