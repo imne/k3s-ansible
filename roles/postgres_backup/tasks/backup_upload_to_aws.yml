@@ -6,8 +6,8 @@
   with_items:
   - rm -rf /backup
   - mkdir /backup
-  - k3s kubectl -n postgresql exec -it postgresql-0 -- pg_dump -U admin -d dev > "/backup/db_backup_$(date +"%d-%m-%Y").sql"
-  - k3s kubectl -n postgresql exec -it postgresql-0 -- pg_dump -U admin -d dev > "/backup/db_backup_latest.sql"
+  - k3s kubectl -n postgresql exec -it postgresql-0 -- pg_dumpall -U admin > "/backup/db_backup_$(date +"%d-%m-%Y").sql"
+  - k3s kubectl -n postgresql exec -it postgresql-0 -- pg_dumpall -U admin > "/backup/db_backup_latest.sql"
   - aws s3 cp /backup/ {{ s3_backup_bucket_name }}/postgres/ --recursive
   run_once: true
   until: this.rc == 0
