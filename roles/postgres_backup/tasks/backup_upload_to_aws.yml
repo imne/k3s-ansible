@@ -1,6 +1,6 @@
 ---
 - name: Postgres data backup
-  command: "{{ item }}"
+  shell: "{{ item }}"
   register: this
   changed_when: false
   with_items:
