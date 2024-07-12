@@ -43,10 +43,8 @@
   with_items:
   - helm repo add traefik https://traefik.github.io/charts
   - helm repo add bitnami https://charts.bitnami.com/bitnami
-  - helm repo add jenkins https://charts.jenkins.io
   - helm repo update
   - k3s kubectl create namespace traefik
-  - k3s kubectl create namespace jenkins
   - k3s kubectl create namespace harbor
   run_once: true
   until: this.rc == 0
@@ -55,16 +53,6 @@
 - name: Install traefik 
   command: >-
     helm install --namespace=traefik --set providers.kubernetesCRD.enabled=true --set rbac.enabled=true --set ports.web.redirectTo.port=websecure --set ports.websecure.tls.enabled=true --set providers.kubernetesIngress.publishedService.enabled=true --set="additionalArguments={--api.dashboard=true,--log.level=DEBUG,--serversTransport.insecureSkipVerify=true}" traefik traefik/traefik
-  register: this
-  changed_when: false
-  with_items: "{{ groups[group_name_master | default('master')] }}"
-  run_once: true
-  until: this.rc == 0
-  retries: 5
-
-- name: Install Jenkins 
-  command: >-
-    helm install --namespace=jenkins jenkins jenkins/jenkins
   register: this
   changed_when: false
   with_items: "{{ groups[group_name_master | default('master')] }}"
